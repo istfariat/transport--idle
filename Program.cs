@@ -6,15 +6,64 @@ namespace transport_idle
     {
         
         static Vehicle[] transPark = new [] {
-            new Vehicle {name = "taxi", price = 90, passangersMax = 1, incomePerPassanger = 5, incomeTimeSeconds = 3},
+            new Vehicle {name = "taxi", price = 90, passangersMax = 1, incomePerPassanger = 5, incomeTimeSeconds = 3, availible = true},
             new Vehicle {name = "bus", price = 20, passangersMax = 20, incomePerPassanger = 2, incomeTimeSeconds = 5},
             new Vehicle {name = "trolley", price = 30, passangersMax = 30, incomePerPassanger = 2, incomeTimeSeconds = 7}
             };
+        
+        static Dictionary<string, Func<>> commands = new Dictionary<string, Func<>> () 
+        {
+            {"buy", CheckBuy()},
+            {"exit", QuitGame()}
+        };
+
+        // static void ChooseAction (string actionInput)
+        // {
+        //     if (actionInput.Substring(0, 4) == "buy ")
+        //         foreach (var veh in transPark)
+        //         {
+        //             if (veh.name.Contains(actionInput.Substring(5)) && veh.availible)
+        //                 veh.Buy();
+        //                 break;
+        //         }
+        //         else if (actionInput == "exit")
+            
+        // }
+
+        static void CheckBuy(string item, Vehicle[] trans)
+        {
+            for (int i = 0; i < trans.Length; i++)
+            {
+                if (item.EndsWith(trans[i].name) && trans[i].availible)
+                    trans[i].Buy();
+                if (i + 1 > trans.Length && trans[i].amount >= trans[i].unlockNextAmount)
+                    trans[i + 1].availible = true;
+            }
+        }
+
+        static void QuitGame()
+        {
+            while (true)
+            {
+
+                Console.WriteLine("Do you wnt to leave? \ny / n");
+                string userInput = Console.ReadLine()??"";
+                if (userInput == "y")
+                    Environment.Exit(0);
+                else if (userInput == "n")
+                    return;
+                else
+                    Console.Write("Invalid input. ");
+            }
+        }
+        
         static void Main()
         {
             var timeUpdated = DateTime.Now;
             string actionInput;
-            
+
+            Console.WriteLine(transPark[0].name.Contains("taxi"));
+                        
             while (true)
             {
                 World.Update(transPark);
@@ -82,12 +131,14 @@ namespace transport_idle
     public class Vehicle
     {
         public string name = "";
-        public  uint amount = 0;
+        public uint amount = 0;
         public uint price;
         public uint passangersMax;
         public uint incomePerPassanger;
         public uint incomeTimeSeconds;
         public ulong timeMoneyGained; 
+        public bool availible = false;
+        public uint unlockNextAmount = 10;
         
 
         public void Buy ()
@@ -97,6 +148,7 @@ namespace transport_idle
             
             World.playerMoney -= this.price;
             this.amount ++;
+            price = (uint)(1.1 * price);
         }
     }
 
