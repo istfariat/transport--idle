@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace transport_idle
 {
@@ -76,6 +77,7 @@ namespace transport_idle
             static public ulong playerMoney = 10000;
             static public double priceModifier = 1.1;
             static public double sellModifier = 0.5;
+            // static public List<string> buffList = new List<string>{};
 
             static Vehicle[] transPark = new [] {
                 new Vehicle {name = "taxi", price = 50, passangersMax = 1, incomePerPassanger = 5, incomeTimeSeconds = 3, availible = true, fuelCost = 1.5},
@@ -83,11 +85,16 @@ namespace transport_idle
                 new Vehicle {name = "trolley", price = 150, passangersMax = 30, incomePerPassanger = 2, incomeTimeSeconds = 7, fuelCost = 3}
                 };
 
+            // static Buff[] buffs = new []{
+            //     new Buff {name = "podorozhnik", modifier = 3}
+            //     };
+
             static string[] vehTypes = new string [] {"taxi", "bus", "trolley"};
 
             public static Dictionary<string, string> commandList = new Dictionary<string, string>() 
             {
                 {"buy <name>", "\t - \t buy specified vehicle"},
+                {"sell <name>", "\t - \t sell specified vehicle"},
                 {"help\t", "\t - \t show list of commands"},
                 {"exit\t", "\t - \t close the game window"}
             };
@@ -100,7 +107,11 @@ namespace transport_idle
                 {
                     if (veh.amount > 0)
                     {
-                        ulong timePass = (ulong)DateTime.Now.Subtract(new DateTime()).TotalSeconds - veh.timeMoneyGained;
+                        // if (buffList[0] != null)
+                        // {
+
+                        // }
+                        ulong timePass = (ulong)DateTime.Now.Subtract(new DateTime()).TotalSeconds + veh.timeMoneyGained;
                         ulong rounds = timePass / veh.incomeTimeSeconds;
                         Random rnd = new Random();
                         double passangersAmount = rnd.Next(1, (int)veh.passangersMax);
@@ -127,7 +138,7 @@ namespace transport_idle
                 }
             }
 
-            public static bool CheckMoney(Vehicle veh)
+            private static bool CheckMoney(Vehicle veh)
             {
                 if (playerMoney >= veh.price)
                     return true;
@@ -162,10 +173,18 @@ namespace transport_idle
                 else Console.WriteLine("You can't sell '{0}'.", inputStringWords[inputStringWords.Length-1]);
             }
 
-            public static void Buff ()
-            {
+            // public static void Buff (string[] inputStringWords)
+            // {
                 
-            }
+            //     int index = Array.IndexOf(vehTypes, inputStringWords[inputStringWords.Length-1]);
+            //     Update();
+            //     if (index >= 0 && transPark[index].availible)
+            //         {
+            //             inputStringWords[1] = 
+            //             transPark[index].
+            //         }
+            //     else Console.WriteLine("You can't buy '{0}'.", inputStringWords[inputStringWords.Length-1]);
+            // }
         }
 
         public class Vehicle
@@ -206,11 +225,18 @@ namespace transport_idle
             }
         }
 
-        public class Buff
-        {
-            public uint durationSeconds;
-            public DateTime startTime = DateTime.Now;
+        // public class Buff
+        // {
+        //     public uint durationSeconds;
+        //     public uint durationRounds;
+        //     public DateTime startTime = DateTime.Now;
+        //     public uint cooldownSeconds;
+        //     public string modifiedParam;
+        //     public uint modifier;
+        //     public bool active = false;
+        //     public DateTime lastActivated;
+        //     public string name;
 
-        }
+        // }
     }
 }
